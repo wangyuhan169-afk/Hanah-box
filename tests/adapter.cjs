@@ -1,0 +1,22 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const snapshot=JSON.parse(fs.readFileSync('data/verified_snapshot.json','utf8'));
+const source=JSON.parse(fs.readFileSync('sources.json','utf8'));
+const context={console,AbortController,Response,Blob,URL,URLSearchParams,TextEncoder,TextDecoder,Uint8Array,Intl,Date,structuredClone,setTimeout,clearTimeout,crypto:require('crypto').webcrypto,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return {textContent:'',onclick:null}}},fetch:async()=>new Response(JSON.stringify(snapshot)),location:{hash:'',pathname:'/',search:''},history:{replaceState(){}}};context.window=context;vm.createContext(context);
+vm.runInContext(fs.readFileSync('web/matching.js','utf8'),context);
+vm.runInContext(fs.readFileSync('web/planning.js','utf8'),context);
+vm.runInContext(fs.readFileSync('web/site_boot.js','utf8'),context);
+vm.runInContext('const HANAH_SOURCES='+JSON.stringify(source)+';const HANAH_JOBS='+JSON.stringify(snapshot.jobs)+';',context);
+vm.runInContext(fs.readFileSync('web/offline.js','utf8'),context);
+(async()=>{const response=await context.fetch('/api/state');const state=await response.json();assert.equal(response.status,200,JSON.stringify(state));assert.equal(state.jobs.length,snapshot.jobs.length);assert.equal(state.sources.length,source.length);
+const profile={degree:'硕士',major:'传播学',degree_origin:'境外',party:'是',fresh:'否',graduation_year:'2024',preferred_categories:['辅导员','行政','教辅','专业技术','教师','科研']};
+let result=await context.fetch('/api/profile',{body:JSON.stringify(profile)});assert.equal(result.status,200);await context.HANAH_SITE.refresh();
+const after=await (await context.fetch('/api/state')).json();assert.equal(after.jobs.length,snapshot.jobs.length);assert.equal(after.profile.major,'传播学');
+const make=(url,date)=>({school:'测试大学',category:'辅导员',title:'辅导员1',source_url:url,opens:date,verification:'原文已核对'});
+let plan=context.HANAH_PLANS([make('https://x/a','2026-03-01'),make('https://x/a','2026-03-01')])[0];assert.equal(plan.repeated,false);assert.equal(plan.records.length,1);
+plan=context.HANAH_PLANS([make('https://x/a','2025-03-01'),make('https://x/b','2026-04-01')])[0];assert(plan.substantiated);assert.equal(plan.months.join(','),'3,4');
+for(const file of fs.readdirSync('web').filter(x=>x.endsWith('.js')))new vm.Script(fs.readFileSync('web/'+file,'utf8'));
+const html=fs.readFileSync('site/index.html','utf8');let scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];for(const s of scripts)new vm.Script(s[1]);
+const exported=await context.fetch('/api/export',{body:JSON.stringify({ids:[state.jobs[0].id]})});assert.equal(exported.status,200);assert((await exported.arrayBuffer()).byteLength>1000);
+console.log('PASS: all actual job dates, public snapshot sync, profile persistence, planning recurrence and JS syntax, export.');console.log('Counts',JSON.stringify({total:after.jobs.length,current:after.jobs.filter(j=>j.deadline&&j.deadline.slice(0,10)>=after.today).length,shortlist:after.jobs.filter(j=>j.deadline&&j.deadline.slice(0,10)>=after.today&&j.match.relevant&&j.match.summary!=='不符合').map(j=>[j.school,j.title])}));
+})().catch(e=>{console.error(e.message);process.exit(1)});
+
