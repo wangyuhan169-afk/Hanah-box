@@ -13,7 +13,7 @@ window.HANAH_MATCH=(j,p,today,status)=>{
  const freshYear=r.fresh_year;add('应届身份',r.fresh_required&&p.fresh==='否'||freshYear&&p.graduation_year&&Number(p.graduation_year)!==freshYear?'不符合':r.fresh_required===false?'符合':'需核实',r.fresh_text||f['招聘对象']||e.fresh);
  add('编制',p.establishment&&(p.establishment==='不限'||p.establishment===j.establishment)?'符合':'需核实',j.establishment);
  if(p.degree_origin==='境外')add('境外学历认证',p.certification==='已取得'?'符合':'需核实','本人认证状态：'+(p.certification||'待核实')+'；按公告取得证书、认证及专业认定');
- const special=(f['其他要求']||f['职称及其它条件']||'')+' '+(f['备注']||''),sex=r.sex_text||special;
+ const special=(f['其他要求']||f['职称及其它条件']||'')+' '+(f['备注']||'')+' '+(j.conditions||''),sex=r.sex_text||special;
  if(special.includes('本科阶段为外国语言文学类B0502')&&p.undergrad_major==='环境科学')add('本科专业','不符合','岗位明确要求本科外国语言文学类B0502；本人本科环境科学');
  if(/仅限男性|限男性|性别[：:]男/.test(sex)&&p.sex==='女')add('性别 / 住宿','不符合',sex);
  else if(/适[宜合]男性报考/.test(sex)&&p.sex==='女')add('性别 / 住宿','需核实',sex+'；适宜男性的表述不等同仅限男性，须向招聘方确认');
@@ -23,10 +23,13 @@ window.HANAH_MATCH=(j,p,today,status)=>{
  const xp=f['工作经历']||'',xpText=xp+' '+special;
  if(/(?:高校|高等院校|专职辅导员).*?(?:工作经历|工作经验)|(?:工作经历|工作经验).*?(?:高校|高等院校)/.test(xpText))add('高校工作经历','需核实',xpText+'；企业教育经历不直接等同高校专职辅导员经历');
  else if(xp&&!['不限','无'].includes(xp))add('工作经历','需核实',xpText+'；需核对具体岗位职责、起止和证明，十年为本人自述');
+ else if(/\d+年以上[\s\S]*?(?:工作经历|工作经验)/.test(special))add('专项工作经历','需核实',special+'；须证明公告要求的具体工作，企业教育年限不能直接替代');
+ if(/英语六级|CET.?6|俄语.*(?:能力|流利)|英语.*(?:工作能力|流利)/i.test(special))add('语言能力','需核实',special+'；尚未提供公告要求的语言成绩或能力证明');
  if(f['职称等级']&&!['不限','无'].includes(f['职称等级']))add('职称','需核实',f['职称等级']+'；本人尚未提供职称证书');
  const summary=items.some(i=>i.outcome==='不符合')?'不符合':items.some(i=>i.outcome==='需核实')?'需进一步核实':'符合已知条件';
- const majorRelated=!majors.length||majors.includes('不限')||/传播|新闻|文学/.test(e.major||'')||(['本科','大专','高中'].includes(j.degree)&&(e.major||'').includes('环境科学'));
- const relevant=majorRelated&&(p.preferred_categories||['辅导员','行政','教辅','专业技术']).includes(j.category)&&!/值班员|保安|保洁|司机|医师/.test(j.title)&&!(p.sex==='女'&&/适[宜合]男性报考/.test(sex));
+ const majorRelated=!majors.length||majors.includes('不限')||(!!p.major&&majors.some(v=>v.includes(p.major)))||(p.major==='传播学'&&/传播|新闻|新媒体/.test(e.major||''))||(['本科','大专','高中'].includes(j.degree)&&!!p.undergrad_major&&(e.major||'').includes(p.undergrad_major));
+ const preferred=Array.isArray(p.preferred_categories)?p.preferred_categories:(p.preferred_categories||'辅导员、行政、教辅、专业技术、教师、科研').split(/[、,，]/);
+ const relevant=majorRelated&&preferred.includes(j.category)&&!/值班员|保安|保洁|司机|医师/.test(j.title);
  let priority=summary==='不符合'?'明确门槛不符':['已截止','已取消'].includes(status)?'历年参考':relevant?'优先核实':'其他岗位';
  if(priority==='优先核实'&&!['原文已核对','已核验'].includes(j.verification))priority='新增待核验';
  return {summary,items,priority,reasons:items.filter(i=>i.outcome==='不符合').map(i=>i.field+'：'+i.evidence),current_age:p.birth_date?ageOn(p.birth_date,today):null,relevant};

@@ -2,12 +2,13 @@
 from dataclasses import dataclass
 from datetime import datetime,timedelta
 from io import BytesIO
-import hashlib,json,re
+import hashlib,json,re,zipfile
 from urllib.parse import urljoin,urlsplit
 from lxml import html
+from recruitment import registration, html_rows, table_jobs, category
 
-EXCLUDE = re.compile(r'拟聘|公示|成绩|资格复审|面试通知|面试公告|笔试公告|参加笔试|考试公告')
-AFFILIATED = re.compile(r'医院|附属小学|附属中学|附属幼儿园')
+EXCLUDE = re.compile(r'拟聘|公示|成绩|资格复审|面试通知|面试公告|笔试公告|参加笔试|考试公告|业务考核公告|体检事宜|进入.*名单|勤工助学|招聘会|兼职辅导员选聘|招标|采购|校内公开招聘')
+AFFILIATED = re.compile(r'医院|附属.{0,5}(?:小学|中学|幼儿园)|基础教育集团')
 RECRUIT = re.compile(r'招聘|选聘|招收')
 DATE = re.compile(r'(20\d{2})年\s*(\d{1,2})月\s*(\d{1,2})日(?:\s*(上午|下午|晚上)?\s*(\d{1,2})(?:时|点|[:：])(?:\s*(\d{1,2})分?)?)?')
 
@@ -20,6 +21,7 @@ class Document:
     links:list
     attachments:list
     digest:str
+    tables:list=None
 
 def read_document(raw,url):
     encoding='gb18030' if any(x in raw[:2000].lower() for x in [b'gb2312',b'gbk',b'gb18030']) else 'utf-8-sig'
@@ -27,8 +29,12 @@ def read_document(raw,url):
     nodes=tree.xpath('//*[contains(concat(" ",normalize-space(@class)," ")," v_news_content ")]')
     if not nodes: nodes=tree.xpath('//*[@id="vsb_content"]')
     if not nodes: nodes=tree.xpath('//*[contains(concat(" ",normalize-space(@class)," ")," article_con ")]')
+    if not nodes:nodes=tree.xpath('//*[@id="zoom" or @id="content" or @id="article_content"]|//*[contains(@class,"wp_articlecontent") or contains(@class,"TRS_Editor") or contains(@class,"news_content")]')
     content=nodes[0] if nodes else None
     text=''
+    if content is None:
+        candidates=tree.xpath('//article|//main|//body')
+        content=candidates[0] if candidates else tree
     if content is not None:
         clone=html.fromstring(html.tostring(content))
         for n in clone.xpath('.//script|.//style'): n.drop_tree()
@@ -40,23 +46,27 @@ def read_document(raw,url):
     title=next((t.strip() for t in titles if len(t.strip())>5 and RECRUIT.search(t)),titles[-1].strip() if titles else '')
     title=re.sub(r'[-—_](?:深圳大学|广东外语外贸大学|广东省人力资源和社会保障厅).*$', '',title).strip()
     links=[(urljoin(url,a.get('href')),a.text_content().strip()) for a in tree.xpath('//a[@href]')]
-    attachments=[{'url':u,'title':t} for u,t in links if '/download.jsp?' in u or re.search(r'\.(?:xlsx?|pdf|docx?)(?:$|\?)',u)]
+    attachments=[{'url':u,'title':t} for u,t in links if '/download.jsp?' in u or re.search(r'\.(?:xlsx?|pdf|docx?|zip)(?:$|\?)',u)]
     # Only header dates, never a date embedded in application conditions.
     pub=tree.xpath('//meta[@name="PubDate" or @name="pubdate"]/@content')
     if not pub:
         head=' '.join(tree.xpath('//*[contains(@class,"time") or contains(@class,"date") or contains(@class,"info")]//text()'))
-        matches=re.findall(r'20\d{2}-\d{1,2}-\d{1,2}',head)
+        matches=re.findall(r'20\d{2}[-/]\d{1,2}[-/]\d{1,2}',head)
         pub=matches[:1]
     if not pub:
         m=re.search(r'发布时间\s*[:：]\s*(20\d{2})[.\-/](\d{1,2})[.\-/](\d{1,2})',tree.text_content())
         if m: pub=[f'{int(m[1]):04}-{int(m[2]):02}-{int(m[3]):02}']
-    return Document(url,title,text,pub[0] if pub else None,links,attachments,hashlib.sha256((text+'\n'+str(attachments)).encode()).hexdigest())
+    if not pub:
+        m=re.search(r'(?:发布日期|发布时间|发布者.*?发布时间)\s*[:：]?\s*(20\d{2})[-/年](\d{1,2})[-/月](\d{1,2})',tree.text_content())
+        if m:pub=[f'{int(m[1]):04}-{int(m[2]):02}-{int(m[3]):02}']
+    published=pub[0].replace('/','-') if pub else None
+    return Document(url,title,text,published,links,attachments,hashlib.sha256((text+'\n'+str(attachments)).encode()).hexdigest(),html_rows(raw))
 
 def recruitment_links(doc):
     host=urlsplit(doc.url).hostname
     out={}
     for u,t in doc.links:
-        if urlsplit(u).scheme=='https' and urlsplit(u).hostname==host and ('/info/' in u or '/content/post_' in u) and RECRUIT.search(t) and not EXCLUDE.search(t):out[u]=t
+        if urlsplit(u).scheme=='https' and urlsplit(u).hostname==host and RECRUIT.search(t) and not EXCLUDE.search(t) and not AFFILIATED.search(t) and not re.search(r'\.(?:xlsx?|pdf|docx?|zip)(?:$|\?)',u) and (re.search(r'/info/|post_\d|/a(?:_|/)\d/|/page\.htm|/\d{4,}(?:\.html?|$)|article|content|news|/contents/',u,re.I)):out[u]=t
     return list(out.items())
 
 def date_value(m):
@@ -73,13 +83,7 @@ def date_value(m):
     return day
 
 def deadline(text):
-    # Restricted to labelled deadline or labelled registration interval.
-    for pattern in [r'报名有效期至([^\n。]{0,60})',r'(?:报名截止时间|报名截止日期|申请截止时间|申请截止日期)\s*[：:为]?\s*([^\n]{0,180})',r'报名时间(?:及方式)?\s*[：:为]?\s*([^\n]{0,300})',r'应聘人员请于([^\n]{0,250})']:
-        for m in re.finditer(pattern,text):
-            if m.group(1).startswith('前'):continue
-            values=list(DATE.finditer(m.group(1)))
-            if values:return date_value(values[-1])
-    return None
+    return registration(text).get('deadline')
 
 def excerpt(text,starts,ends,default='公告未披露'):
     start=None
@@ -122,14 +126,17 @@ def parse_single(doc,source):
         m=re.search(r'(.+?)[，,]\s*(\d+)名',explicit.group(1))
         if m:role=m.group(1).strip();count=int(m.group(2))
     if not role:
-        m=re.search(r'岗位名称\s*[:：]\s*([^\n.。]{1,70}?)(?=工作内容|研究方向|\n|[.。]|$)',text)
+        m=re.search(r'岗位名称\s*[:：]?\s*([^\n.。]{1,70}?)(?=工作内容|研究方向|\n|[.。]|$)',text)
         if m:role=m.group(1).strip()
     if not role:
         # Generic annual teacher plans / multi-role lists need their attachment, not a made-up role.
         if '计划表' in text or '具体岗位见附件' in text:return []
-        for name in ['专职副研究员','副研究员','研究助理','思想政治理论课教师','学术带头人','师资博士后','科研博士后']:
+        for name in ['专职辅导员','辅导员','专职副研究员','副研究员','研究助理','思想政治理论课教师','学术带头人','师资博士后','科研博士后']:
             if name in doc.title or (name in text[:400] and name=='专职副研究员'):role=name;break
     if not role:return []
+    named_count=re.search(r'[（(]\s*(\d+)名\s*[）)]',role)
+    if named_count:
+        count=int(named_count[1]);role=re.sub(r'[（(]\s*\d+名\s*[）)]','',role).strip()
     if count is None:
         m=re.search(r'(?:招聘|诚聘|副研究员|研究助理)\s*(\d+)\s*(?:名|人)',doc.title+'\n'+text[:500])
         if m:count=int(m.group(1))
@@ -149,10 +156,14 @@ def parse_single(doc,source):
     party=True if re.search(r'(?:\n|[（(]一[）)]|\d\.)\s*(?:中国共产党党员|中共党员)[。；]',conditions) or '中国共产党党员。' in conditions else None
     location=excerpt(text,[r'工作地点\s*[:：]',r'具体工作地点\s*[:：]'],[r'\n',r'聘用期限',r'学历和研究方向'], '')
     area=next((d for d in ['南山区','白云区','番禺区','南海区','顺德区','禅城区'] if d in location),'区县待核实')
-    job={'school':source['name'],'province':'广东省','city':source.get('city','城市待核实'),'district':area,'title':role,'department':doc.title,'count':count,'nature':'公办','degree':edu,'majors':majors,'category':'科研' if any(x in role for x in ['研究','博士后']) else '教师' if '教师' in role else '人才引进' if '带头人' in role else '行政','establishment':'劳务派遣' if '劳务派遣' in text else '公告未明确','salary':pay,'requirements':duty,'conditions':conditions,'source_url':doc.url,'source_title':doc.title,'published':doc.published,'official_text':text,'attachments':doc.attachments,'deadline':deadline(text),'rolling':bool(re.search(r'长期有效|长期招聘|常年接受|常年招聘|招满即止',text)),'method':'在线' if '登录' in text and ('报名' in text or '投递' in text) else '邮件','verification':'自动整理待核验','evidence':{'degree':conditions,'major':conditions,'party':conditions},'materials':excerpt(text,[r'(?:四|五)、应聘材料',r'五、应聘者请提供以下材料'],[r'(?:五|六)、应聘程序'], '未公布'),'exam':'公告要求面试 / 笔试，时间另行通知' if '面试' in text else '未公布'}
+    job={'school':source['name'],'province':'广东省','city':source.get('city','城市待核实'),'district':area,'title':role,'department':doc.title,'count':count,'nature':'公办','degree':edu,'majors':majors,'category':'科研' if any(x in role for x in ['研究','博士后']) else '教师' if '教师' in role else '人才引进' if '带头人' in role else '行政','establishment':'劳务派遣' if '劳务派遣' in text else '合同制' if re.search(r'签订劳动合同|签订.*?劳动合同',text) else '公告未明确','salary':pay,'requirements':duty,'conditions':conditions,'source_url':doc.url,'source_title':doc.title,'published':doc.published,'official_text':text,'attachments':doc.attachments,'deadline':deadline(text),'rolling':bool(re.search(r'长期有效|长期招聘|常年接受|常年招聘|招满即止',text)),'method':'在线' if '登录' in text and ('报名' in text or '投递' in text) else '邮件','verification':'自动整理待核验','evidence':{'degree':conditions,'major':conditions,'party':conditions},'materials':excerpt(text,[r'(?:四|五)、应聘材料',r'五、应聘者请提供以下材料'],[r'(?:五|六)、应聘程序'], '未公布'),'exam':'公告要求面试 / 笔试，时间另行通知' if '面试' in text else '未公布'}
     age_lines=[line for line in conditions.splitlines() if '年龄' in line and re.search(r'\d+\s*(?:周岁|岁)',line)]
     job['eligibility']={'age_text':age_lines[0] if len(age_lines)==1 else ''}
     if job.get('deadline') and re.search(r'(?:年龄)?计算至报名截止日期',conditions):job['eligibility']['age_as_of']=job['deadline'][:10]
+    job['nature']=source.get('nature','公办');job['school_level']=source.get('school_level','待核实');job['category']=category(role)
+    job.update(registration(text,doc.published))
+    if '专业不限' in conditions:job['majors']=['不限']
+    if re.search(r'中共(?:预备)?党员|中共党员.*预备党员',conditions):job['party_required']=True
     job['salary_details']=job['salary']
     job['salary']=job['salary'][:140]+('…（详见详情）' if len(job['salary'])>140 else '')
     job['id']=hashlib.sha256((doc.url+'|'+role).encode()).hexdigest()[:20]
@@ -164,8 +175,8 @@ def attachment_text(raw,name):
     if raw.lstrip().startswith(b'<'):
         raise ValueError('附件返回网页，可能需要人工验证码；未当作附件解析')
     if name.lower().endswith('.pdf'):
-        from pypdf import PdfReader
-        text='\n'.join(p.extract_text() or '' for p in PdfReader(BytesIO(raw)).pages)
+        from markitdown import MarkItDown
+        text=MarkItDown().convert_stream(BytesIO(raw),file_extension='.pdf').text_content
         if len(text.strip())<40:raise ValueError('扫描附件无可提取文字，需要人工核验')
         return text
     if name.lower().endswith('.xlsx'):
@@ -233,13 +244,14 @@ def parse_spreadsheet_jobs(doc,source,raw,attachment):
     for sheet,rows in spreadsheet_rows(raw):
         header=next((i for i,r in enumerate(rows) if '岗位名称' in r and ('招聘人数' in r)),None)
         if header is None:continue
-        headings=rows[header]
+        aliases={'学历':'学历要求','学位':'学位要求','学历学位要求':'学历学位','学历、学位':'学历学位','招聘人数（人）':'招聘人数','专业':'专业要求','岗位要求':'其他要求','任职要求':'其他要求','部门名称':'工作部门','最低专业技术资格':'职称等级','与岗位有关的其它条件':'其他要求','专业名称及编号(须注明专业代码)':'专业要求','专业名称及编号（须注明专业代码）':'专业要求'}
+        headings=[aliases.get(re.sub(r'\s','',h),re.sub(r'\s','',h)) for h in rows[header]]
         for number,row in enumerate(rows[header+1:],start=header+2):
             fields={h:row[i] if i<len(row) else '' for i,h in enumerate(headings) if h}
             role=fields.get('岗位名称','');count=fields.get('招聘人数','')
             if not role or not re.fullmatch(r'\d+',count):continue
             code=fields.get('岗位代码') or fields.get('序号') or str(number)
-            degree_text=' '.join(fields.get(k,'') for k in ['学历要求','学位要求','学历学位'])
+            degree_text=' '.join(fields.get(k,'') for k in ['学历要求','学位要求','学历学位','学历/学位'])
             degree=next((d for d in ['高中','大专','本科','硕士','博士'] if d in degree_text),None)
             if degree is None and '学士' in degree_text:degree='本科'
             major=fields.get('专业要求',fields.get('招聘专业（代码）',''))
@@ -254,13 +266,13 @@ def parse_spreadsheet_jobs(doc,source,raw,attachment):
             job={'id':hashlib.sha256((doc.url+'|'+code+'|'+role).encode()).hexdigest()[:20],
                 'school':source['name'],'province':'广东省','city':source.get('city','城市待核实'),
                 'district':source.get('district','多校区 / 区县待核实'),'title':role,'code':fields.get('岗位代码') or None,
-                'department':fields.get('工作部门','部门未明确'),'count':int(count),'nature':'公办',
+                'department':fields.get('工作部门','部门未明确'),'count':int(count),'nature':source.get('nature','待核实'),'school_level':source.get('school_level','待核实'),
                 'degree':degree,'majors':majors,'category':'辅导员' if '辅导员' in role else '行政' if '工作人员' in role else '教师' if any(t in role for t in ['教师','教学岗']) else '教辅' if '教辅' in role else '专业技术' if '专业技术' in role else '行政',
                 'establishment':'事业编制' if re.search(r'事业(?:单位)?编制人员',doc.text) else '公告未明确',
-                'salary':'事业编制，按国家及省政策享受薪酬；未披露金额','salary_details':pay,
+                'salary':'具体待遇及金额见官方公告','salary_details':pay,
                 'requirements':fields.get('岗位职责',conditions),'conditions':conditions+'\n工作校区：'+source.get('location_note','岗位表未指定具体工作校区，须与招聘方确认')+'\n通用报名条件及材料见下方完整公告。',
-                'party_required':True if '中共党员' in party or '中共党员' in fields.get('职称及其它条件','') else False if party=='不限' else None,
-                'evidence':{'degree':degree_text,'major':major,'party':party or fields.get('职称及其它条件','')},
+                'party_required':True if '中共党员' in party or '中共党员' in conditions else False if party=='不限' else None,
+                'evidence':{'degree':degree_text,'major':major,'party':party or fields.get('其他要求') or fields.get('职称及其它条件','')},
                 'source_url':doc.url,'source_title':doc.title,'published':doc.published,'official_text':doc.text,
                 'attachments':doc.attachments,'attachment_url':attachment['url'],'attachment_row':number,
                 'attachment_sheet':sheet,'attachment_fields':fields,'deadline':deadline(doc.text),
@@ -268,7 +280,7 @@ def parse_spreadsheet_jobs(doc,source,raw,attachment):
                 'verification':'自动整理待核验','exam':fields.get('考试方式','详见完整公告'),
                 'materials':'完整公告四、招聘程序中的报名材料清单；按岗位要求提供佐证材料。',
                 'vacancy_note':'初始岗位表名额，滚动招聘剩余名额须向学校核实' if '滚动招聘' in doc.text else '原岗位表名额'}
-            job['eligibility']={'age_text':fields.get('年龄',''),'fresh_text':fields.get('招聘对象',''),'fresh_required':False if fields.get('招聘对象')=='不限' else True if fields.get('招聘对象') in ['应届毕业生','2026年应届毕业生'] else None}
+            job['eligibility']={'age_text':fields.get('年龄') or fields.get('其他要求',''),'fresh_text':fields.get('招聘对象',''),'fresh_required':False if fields.get('招聘对象')=='不限' else True if fields.get('招聘对象') in ['应届毕业生','2026年应届毕业生'] else None}
             if fields.get('招聘对象')=='2026年应届毕业生':job['eligibility']['fresh_year']=2026
             if re.search(r'年龄(?:及工作经历)?计算至报名首日',doc.text):
                 interval=re.search(r'(?:应聘人员请于|首批报名时间为|报名时间为)\s*([^\n]{0,150})',doc.text)
@@ -289,16 +301,39 @@ def parse_spreadsheet_jobs(doc,source,raw,attachment):
 def collect_document(doc,source,loader):
     source=effective_source(doc,source);jobs=[];digests=[];errors=[]
     for a in doc.attachments:
-        if '岗位' not in a['title'] or not urlsplit(a['url']).path.lower().endswith(('.xls','.xlsx')):continue
+        name=a['title'].lower();path=urlsplit(a['url']).path.lower()
+        is_zip=name.endswith('.zip') or path.endswith('.zip')
+        if not is_zip and ('岗位' not in a['title'] or not (name.endswith(('.xls','.xlsx','.pdf')) or path.endswith(('.xls','.xlsx','.pdf')))):continue
         try:
-            raw=loader(a['url']);parsed=parse_spreadsheet_jobs(doc,source,raw,a)
+            raw=loader(a['url']);parsed=[]
+            if is_zip:
+                with zipfile.ZipFile(BytesIO(raw)) as package:
+                    for member in package.infolist():
+                        if member.file_size>8_000_000:raise ValueError('压缩包内附件过大，需人工核验')
+                        title=member.filename
+                        if '岗位' in title and title.lower().endswith(('.xls','.xlsx')):
+                            content=package.read(member)
+                            parsed.extend(parse_spreadsheet_jobs(doc,source,content,a) or table_jobs(doc,source,spreadsheet_rows(content)))
+            elif name.endswith('.pdf') or path.endswith('.pdf'):
+                markdown=attachment_text(raw,'.pdf')
+                raise ValueError('PDF已先转为Markdown，复杂岗位表仍须核对列对应关系；保留官方附件')
+            else:parsed=parse_spreadsheet_jobs(doc,source,raw,a) or table_jobs(doc,source,spreadsheet_rows(raw))
             if not parsed:raise ValueError('岗位表未识别到完整表头和岗位行，需人工核验')
             jobs.extend(parsed);digests.append((a['url'],hashlib.sha256(raw).hexdigest()))
         except Exception as e:errors.append(a['title']+'：'+str(e)[:180])
     digest=hashlib.sha256((doc.digest+json.dumps(digests,ensure_ascii=False)).encode()).hexdigest() if digests else doc.digest
-    parsed=jobs or parse_jobs(doc,source)
+    parsed=jobs or table_jobs(doc,source,doc.tables or []) or parse_jobs(doc,source)
     info=application_info(doc)
-    for j in parsed:j.update(info)
+    dates=registration(doc.text,doc.published)
+    for j in parsed:
+        j.update(info)
+        if dates['opens'] and not j.get('opens'):j['opens']=dates['opens']
+        j['schedule_evidence']=dates['schedule_evidence'];j['opens_basis']=dates['opens_basis']
+        rules=j.setdefault('eligibility',{})
+        if dates['opens'] and re.search(r'年龄(?:及工作经历)?计算至报名首日',doc.text):rules['age_as_of']=dates['opens'][:10]
+        if dates['deadline'] and re.search(r'年龄(?:及工作经历)?计算至报名截止日',doc.text):rules['age_as_of']=dates['deadline'][:10]
+        j['school_level']=source.get('school_level',j.get('school_level','待核实'))
+        j['nature']=source.get('nature',j.get('nature','待核实'))
     return parsed,digest,errors
 
 def parse_jobs(doc,source):

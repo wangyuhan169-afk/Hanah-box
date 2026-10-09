@@ -78,7 +78,7 @@ def status(j):
     return '正在报名' if end else '截止待核实'
 
 def match(j,p):
-    if p.get('birth_date') or p.get('degree_origin'):
+    if p.get('degree') or p.get('major') or p.get('birth_date') or p.get('degree_origin'):
         from eligibility import assess
         return assess(j,p,now().date().isoformat(),status(j))
     results=[]
@@ -230,7 +230,8 @@ def save_job(j):
         if not isinstance(j.get(k),str) or not j[k].strip(): raise ValueError(f'缺少 {k}')
     host=urlsplit(j['source_url']).hostname
     with connect() as c:
-        allowed={urlsplit(json.loads(r['body'])['url']).hostname for r in c.execute('SELECT body FROM sources')}
+        registered=[json.loads(r['body']) for r in c.execute('SELECT body FROM sources')]
+        allowed={host for s in registered for host in [urlsplit(s['url']).hostname,*s.get('official_hosts',[]),*[urlsplit(u).hostname for u in s.get('list_urls',[])]]}
         if urlsplit(j['source_url']).scheme!='https' or host not in allowed: raise ValueError('来源须为已登记官方域名的 HTTPS 链接')
         for key in ['deadline','opens','material_deadline','exam_date']: parse_date(j.get(key))
         if int(j.get('shipping_days') or 0) < 0: raise ValueError('物流天数不得为负')
@@ -248,7 +249,7 @@ def save_job(j):
     return j['id']
 
 def xlsx(jobs):
-    cols=[('school','院校'),('province','省份'),('city','城市'),('district','区县'),('title','岗位'),('requirements','岗位要求'),('salary','薪资待遇'),('conditions','报名条件'),('method','报名方式'),('application_details','报名方式完整说明'),('materials','所需材料'),('deadline','官方截止'),('source_url','原公告'),('advice_date','建议最晚投递'),('advice_reason','计算依据'),('stage','报名进度'),('note','私人备注'),('verification','核验状态'),('status','报名状态'),('match_summary','个人资格初筛'),('match_priority','个人优先级')]
+    cols=[('school','院校'),('province','省份'),('city','城市'),('district','区县'),('title','岗位'),('requirements','岗位要求'),('salary','薪资待遇'),('conditions','报名条件'),('method','报名方式'),('application_details','报名方式完整说明'),('materials','所需材料'),('opens','报名开始'),('deadline','官方截止'),('school_level','院校层次'),('schedule_evidence','日期原文依据'),('source_url','原公告'),('advice_date','建议最晚投递'),('advice_reason','计算依据'),('stage','报名进度'),('note','私人备注'),('verification','核验状态'),('status','报名状态'),('match_summary','个人资格初筛'),('match_priority','个人优先级')]
     prepared=[]
     for j in jobs:
         a=advice(j)

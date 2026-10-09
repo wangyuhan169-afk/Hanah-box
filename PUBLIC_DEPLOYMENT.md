@@ -27,3 +27,8 @@ GitHub Actions 定时任务每四小时尝试检查已配置官网，然后更�
 ## 手动更新与部署维护
 
 Pages 的 Source 已设为 GitHub Actions。若需提前采集，打开仓库 Actions → Recruitment site and official-source updates → Run workflow，勾选 Check official recruitment sources before publishing。普通代码推送会重新部署，但不额外抓取。定时任务每四小时尝试采集。查看网站“来源与更新”可确认各入口检查时间和失败原因。
+
+
+## 2026-10-09 开发更新
+
+投递机会、长期线索、历史参考与2027规划分开展示，配置46个官方来源入口。普通代码更新也会先尝试重新采集；原始历史记录继续留存，自动整理记录可以随解析能力改进而重读，已核验条件受保护。共20项解析与匹配测试；新版浏览器检查状态在本次交付说明中记录，不能沿用旧版37项检查作为新版验证。

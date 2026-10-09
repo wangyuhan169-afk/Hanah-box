@@ -7,3 +7,6 @@ __pycache__/
 private/
 dist/hanah-WYH*
 delivery/WYH*
+
+site/
+dist/
