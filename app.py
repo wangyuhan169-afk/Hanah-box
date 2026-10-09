@@ -248,7 +248,7 @@ def save_job(j):
     return j['id']
 
 def xlsx(jobs):
-    cols=[('school','院校'),('province','省份'),('city','城市'),('district','区县'),('title','岗位'),('requirements','岗位要求'),('salary','薪资待遇'),('conditions','报名条件'),('deadline','官方截止'),('source_url','原公告'),('advice_date','建议最晚投递'),('advice_reason','计算依据'),('stage','报名进度'),('note','私人备注'),('verification','核验状态'),('status','报名状态'),('match_summary','个人资格初筛'),('match_priority','个人优先级')]
+    cols=[('school','院校'),('province','省份'),('city','城市'),('district','区县'),('title','岗位'),('requirements','岗位要求'),('salary','薪资待遇'),('conditions','报名条件'),('method','报名方式'),('application_details','报名方式完整说明'),('materials','所需材料'),('deadline','官方截止'),('source_url','原公告'),('advice_date','建议最晚投递'),('advice_reason','计算依据'),('stage','报名进度'),('note','私人备注'),('verification','核验状态'),('status','报名状态'),('match_summary','个人资格初筛'),('match_priority','个人优先级')]
     prepared=[]
     for j in jobs:
         a=advice(j)
@@ -342,9 +342,16 @@ def seed_snapshot():
             old=c.execute('SELECT body FROM jobs WHERE id=?',(j['id'],)).fetchone()
             if old:
                 previous=json.loads(old['body'])
-                if previous.get('document_hash')==j.get('document_hash') and 'eligibility' not in previous and j.get('eligibility'):
-                    previous['eligibility']=j['eligibility']
-                    c.execute('UPDATE jobs SET body=? WHERE id=?',(json.dumps(previous,ensure_ascii=False),j['id']))
+                if previous.get('document_hash')==j.get('document_hash'):
+                    changed=False
+                    if 'eligibility' not in previous and j.get('eligibility'):
+                        previous['eligibility']=j['eligibility'];changed=True
+                    if 'application_details' not in previous and j.get('application_details'):
+                        previous['application_details']=j['application_details']
+                        previous['application_urls']=j.get('application_urls',[]);changed=True
+                        if not previous.get('changes'):previous['method']=j.get('method','待核实')
+                        if previous.get('materials') in ['未公布','完整公告四、招聘程序中的报名材料清单；按岗位要求提供佐证材料。']:previous['materials']=j.get('materials',previous['materials'])
+                    if changed:c.execute('UPDATE jobs SET body=? WHERE id=?',(json.dumps(previous,ensure_ascii=False),j['id']))
             c.execute('INSERT OR IGNORE INTO jobs VALUES (?,?)',(j['id'],json.dumps(j,ensure_ascii=False)))
         for n in seed['notices']:
             c.execute('INSERT OR IGNORE INTO notices VALUES (?,?)',(n['url'],json.dumps(n,ensure_ascii=False)))

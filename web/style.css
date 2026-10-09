@@ -3,3 +3,6 @@
 td:nth-child(4) small{max-width:180px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}td:nth-child(2) small{max-width:240px}details summary{cursor:pointer;color:var(--green)}
 
 table{table-layout:fixed}th:nth-child(1){width:17%}th:nth-child(2){width:19%}th:nth-child(3){width:19%}th:nth-child(4){width:15%}th:nth-child(5){width:14%}th:nth-child(6){width:12%}th:nth-child(7){width:4%}td{overflow-wrap:anywhere}td:nth-child(3) small:first-of-type{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}td:nth-child(2) small{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}th:last-child,td:last-child{padding-left:5px;padding-right:5px}
+
+/* Additional application and material columns retain horizontal scrolling on mobile. */
+table{min-width:1450px}th:nth-child(1){width:14%}th:nth-child(2){width:15%}th:nth-child(3){width:13%}th:nth-child(4){width:10%}th:nth-child(5){width:11%}th:nth-child(6){width:14%}th:nth-child(7){width:12%}th:nth-child(8){width:8%}th:nth-child(9){width:3%}.applicationCell details,.materialsCell details{margin-top:8px}.applicationCell p,.materialsCell p{white-space:pre-wrap;line-height:1.65;font-size:12px}.materialsCell>small{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}

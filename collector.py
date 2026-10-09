@@ -94,6 +94,24 @@ def excerpt(text,starts,ends,default='公告未披露'):
         if m:stop=min(stop,m.start())
     return tail[:stop].strip() or default
 
+def application_info(doc):
+    """Retain official instructions; a contact email alone is not an application method."""
+    end=[r'(?:[一二三四五六七八九十]+[、．.]|[（(][二三四五六七八九十][）)])\s*(?:报名注意事项|资格审查|资格审核|资格复审|笔试|面试|考试|考核|体检|公示|聘用|薪酬|待遇|联系方式)',r'\n\s*[一二三四五六七八九十]+[、．.]']
+    instructions=excerpt(doc.text,[r'报名方式',r'应聘方式',r'应聘流程',r'应聘程序',r'申请方式',r'[（(]一[）)]\s*报名'],end,'')
+    if not instructions:
+        pieces=re.split(r'[。\n]',doc.text)
+        instructions='。\n'.join(s.strip() for s in pieces if re.search(r'(?:发送|投递|寄送|登录|进入|前往|注册)',s) and re.search(r'邮箱|邮件|招聘系统|报名系统|招聘平台|zp\.',s))
+    normalized=re.sub(r'不设现场报名|不接受现场报名','',instructions)
+    modes=[]
+    if re.search(r'网上报名|网络报名|线上报名|在线报名|(?:登录|进入|前往)[^\n]{0,140}(?:系统|平台|zp\.)|(?:招聘|报名)(?:管理)?(?:系统|平台)[^\n]{0,80}(?:报名|投递|上传)',normalized):modes.append('在线')
+    if re.search(r'采取邮件|邮件报名|电子邮件报名|(?:发送|投递|发)[^\n]{0,120}(?:邮箱|邮件)|报名邮箱|(?:发送|投递)[^\n]{0,120}@[A-Za-z]',normalized):modes.append('邮件')
+    if re.search(r'邮寄报名|采取邮寄|(?:寄送|邮寄)[^\n]{0,25}报名',normalized):modes.append('邮寄')
+    if '现场报名' in normalized:modes.append('现场')
+    material=excerpt(doc.text,[r'(?:应聘|报名|申请)(?:时需提供的|需提交的|需提供的|所需)?材料(?:清单|包括|如下)?\s*[:：\n]',r'(?:提交|提供|准备|上传)(?:如下|以下|下列)材料\s*[:：\n]',r'需上传的材料\s*[:：\n]'],end+[r'[（(][二三四五六七八九十][）)]\s*(?:报名确认|报名注意事项|资格审查|资格审核)'],'')
+    if not material and instructions and re.search(r'身份证|学历学位证|党员.*证明|学生干部.*证明|个人简历|报名表',instructions):material=instructions
+    urls=list(dict.fromkeys(re.findall(r'https?://[^\s\u4e00-\u9fff)）<>，,。；;、\]】]+',instructions)))
+    return {'method':' / '.join(modes) if modes else '待核实','application_details':instructions or '报名方式尚未从原文完整提取，请打开官方公告核对。','application_urls':urls,'materials':material or '材料清单尚未从原文完整提取，请打开官方公告核对报名、资格审查及岗位专属材料。'}
+
 def parse_single(doc,source):
     text=doc.text
     if not text or EXCLUDE.search(doc.title) or not RECRUIT.search(doc.title):return []
@@ -278,7 +296,10 @@ def collect_document(doc,source,loader):
             jobs.extend(parsed);digests.append((a['url'],hashlib.sha256(raw).hexdigest()))
         except Exception as e:errors.append(a['title']+'：'+str(e)[:180])
     digest=hashlib.sha256((doc.digest+json.dumps(digests,ensure_ascii=False)).encode()).hexdigest() if digests else doc.digest
-    return jobs or parse_jobs(doc,source),digest,errors
+    parsed=jobs or parse_jobs(doc,source)
+    info=application_info(doc)
+    for j in parsed:j.update(info)
+    return parsed,digest,errors
 
 def parse_jobs(doc,source):
     if doc.url=='https://www.xhsysu.edu.cn/info/1137/16066.htm':
