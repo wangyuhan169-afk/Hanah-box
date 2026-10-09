@@ -39,6 +39,15 @@ window.HANAH_SITE=(()=>{
     snapshot.jobs.forEach(api.validate);
     const next=structuredClone(api.get()),old=new Map(next.jobs.map(j=>[j.id,j]));
     for(const incoming of snapshot.jobs){
+     const merged=(incoming.merged_ids||[]).map(id=>old.get(id)).filter(Boolean);
+     if(!merged.length)continue;
+     const keeper=old.get(incoming.id)||{...incoming,personal:{}};
+     const personal=[keeper.personal||{},...merged.map(j=>j.personal||{})];
+     keeper.personal={...personal.find(p=>p.stage)||{},...keeper.personal,favorite:personal.some(p=>p.favorite),note:[...new Set(personal.map(p=>p.note).filter(Boolean))].join('\n')};
+     old.set(incoming.id,keeper);
+     for(const row of merged){if(row._local_edit)continue;old.delete(row.id)}
+    }
+    for(const incoming of snapshot.jobs){
      const previous=old.get(incoming.id),notice=(snapshot.notices||[]).find(n=>n.url===incoming.source_url);
      const changed=previous?.document_hash&&previous.document_hash!==incoming.document_hash;
      let row;
