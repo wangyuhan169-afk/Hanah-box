@@ -1,0 +1,169 @@
+[
+  {
+    "name": "中山大学",
+    "city": "广州市",
+    "url": "https://rsc.sysu.edu.cn/"
+  },
+  {
+    "name": "华南师范大学",
+    "city": "广州市",
+    "url": "https://rsc.scnu.edu.cn/"
+  },
+  {
+    "name": "广东工业大学",
+    "city": "广州市",
+    "url": "https://rsc.gdut.edu.cn/"
+  },
+  {
+    "name": "广东外语外贸大学",
+    "city": "广州市",
+    "url": "https://rsc.gdufs.edu.cn/",
+    "list_urls": [
+      "https://rsc.gdufs.edu.cn/zpxx/zpxx.htm",
+      "https://rsc.gdufs.edu.cn/zpxx/zpxx1.htm",
+      "https://rsc.gdufs.edu.cn/"
+    ],
+    "parser": "gdufs"
+  },
+  {
+    "name": "深圳大学",
+    "city": "深圳市",
+    "url": "https://hr.szu.edu.cn/",
+    "list_urls": [
+      "https://hr.szu.edu.cn/rczp.htm",
+      "https://hr.szu.edu.cn/rczp/zzyjry.htm",
+      "https://hr.szu.edu.cn/rczp/gljsry.htm",
+      "https://hr.szu.edu.cn/rczp/fdy.htm"
+    ],
+    "parser": "szu"
+  },
+  {
+    "name": "佛山大学",
+    "city": "佛山市",
+    "url": "https://www.fosu.edu.cn/",
+    "parser": "generic",
+    "coverage_note": "当前网络拒绝访问，招聘栏目路径尚未核对，不计入已覆盖院校"
+  },
+  {
+    "name": "东莞理工学院",
+    "city": "东莞市",
+    "url": "https://rs.dgut.edu.cn/",
+    "coverage_note": "学校主页已成功读取并核对人才招聘链接；招聘站尚未成功访问，不代表没有招聘"
+  },
+  {
+    "name": "东莞职业技术学院",
+    "city": "东莞市",
+    "url": "https://rsc.dgpt.edu.cn/rczp.htm",
+    "coverage_note": "学校主页已成功读取并核对人事处招聘链接；招聘栏目尚未成功访问"
+  },
+  {
+    "name": "东莞城市学院",
+    "city": "东莞市",
+    "url": "https://hr.dgcu.edu.cn/newslist.php?catid=5",
+    "coverage_note": "学校主页及旧招聘页可访问，旧页公告为2019年前后；现行人事招聘栏目尚未成功访问，未把旧公告当新岗位"
+  },
+  {
+    "name": "广州新华学院",
+    "city": "东莞市",
+    "url": "https://www.xhsysu.edu.cn/",
+    "coverage_note": "学校主页及2026年7月15日官方教师公告已核对；仅整理传播相关院系一条岗位，未宣称覆盖所有招聘"
+  },
+  {
+    "name": "惠州学院",
+    "city": "惠州市",
+    "url": "https://rsc.hzu.edu.cn/",
+    "coverage_note": "待核对招聘栏目；当前网络访问失败，不能据此认定无招聘"
+  },
+  {
+    "name": "中山火炬职业技术学院",
+    "city": "中山市",
+    "url": "https://www.zstp.edu.cn/",
+    "coverage_note": "待核对招聘栏目；当前网络访问失败，不能据此认定无招聘"
+  },
+  {
+    "name": "广东省人社厅 · 高校招聘",
+    "city": "广东省",
+    "url": "https://hrss.gd.gov.cn/zwgk/sydwzp/zpgg/index.html",
+    "list_urls": [
+      "https://hrss.gd.gov.cn/zwgk/sydwzp/zpgg/index.html",
+      "https://hrss.gd.gov.cn/zwgk/sydwzp/zpgg/index_2.html",
+      "https://hrss.gd.gov.cn/zwgk/sydwzp/zpgg/index_3.html",
+      "https://hrss.gd.gov.cn/zwgk/sydwzp/zpgg/index_4.html",
+      "https://hrss.gd.gov.cn/zwgk/sydwzp/zpgg/index_5.html",
+      "https://hrss.gd.gov.cn/zwgk/sydwzp/zpgg/index_6.html",
+      "https://hrss.gd.gov.cn/zwgk/sydwzp/zpgg/index_7.html",
+      "https://hrss.gd.gov.cn/zwgk/sydwzp/zpgg/index_8.html"
+    ],
+    "schools": {
+      "广东环境保护工程职业学院": {
+        "city": "佛山市",
+        "district": "多校区 / 区县待核实"
+      },
+      "广东职业技术学院": {
+        "city": "佛山市",
+        "district": "多校区 / 区县待核实",
+        "location_note": "公告明确学校位于佛山市，有禅城、高明、南海三个校区；岗位工作校区须核实。"
+      },
+      "广东交通职业技术学院": {
+        "city": "广州市",
+        "district": "多校区 / 区县待核实",
+        "location_note": "按院校所在地归入广州；学院有四个校区，具体岗位工作城市和校区须确认。"
+      },
+      "广州中医药大学": {
+        "city": "广州市",
+        "district": "多校区 / 区县待核实"
+      },
+      "广东财经大学": {
+        "city": "广州市",
+        "district": "广州 / 佛山校区待分配",
+        "location_note": "院校所在地广州；学校有广州和佛山两校区，具体岗位工作城市和校区须向招聘方确认。"
+      },
+      "广东开放大学（广东理工职业学院）": {
+        "city": "中山市",
+        "district": "校区待核实",
+        "location_note": "学校有广州与中山等校区；岗位工作校区需确认，按院校高职办学所在地中山分类。"
+      },
+      "广东工贸职业技术学院": {
+        "city": "广州市",
+        "district": "多校区待核实",
+        "location_note": "具体工作校区以岗位表和招聘方安排为准"
+      },
+      "惠州学院": {
+        "city": "惠州市",
+        "district": "惠城区 / 校区待核实",
+        "location_note": "具体工作校区以岗位表和招聘方安排为准"
+      },
+      "广东工业大学": {
+        "city": "广州市",
+        "district": "多校区待核实",
+        "location_note": "学校有揭阳等校区；岗位表未指定时不能据院校所在地断言工作城市。"
+      },
+      "星海音乐学院": {
+        "city": "广州市",
+        "district": "校区待核实",
+        "location_note": "具体工作校区以岗位表和招聘方安排为准"
+      },
+      "广东科学技术职业学院": {
+        "city": "珠海市",
+        "district": "广州 / 珠海校区待核实",
+        "location_note": "学校在广州与珠海办学；按主校区珠海分类，岗位工作校区须确认。"
+      },
+      "广东第二师范学院": {
+        "city": "广州市",
+        "district": "校区待核实",
+        "location_note": "具体工作校区以岗位表和招聘方安排为准"
+      },
+      "广东省外语艺术职业学院": {
+        "city": "广州市",
+        "district": "校区待核实",
+        "location_note": "具体工作校区以岗位表和招聘方安排为准"
+      },
+      "肇庆学院": {
+        "city": "肇庆市",
+        "district": "校区待核实",
+        "location_note": "具体工作校区以岗位表和招聘方安排为准"
+      }
+    },
+    "coverage_note": "省人社厅官方公告；自动解析已配置高校公开岗位表，不代表覆盖广东全省"
+  }
+]
