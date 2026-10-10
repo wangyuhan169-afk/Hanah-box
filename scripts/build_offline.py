@@ -12,7 +12,7 @@ html=html.replace('<div id="alert" role="status"></div>', '<aside class="offline
 html=html.replace('<script src="/matching.js"></script>', '<script>'+(root/'web/matching.js').read_text()+'</script>')
 html=html.replace('<script src="/planning.js"></script>', '<script>'+(root/'web/planning.js').read_text()+'</script>')
 html=html.replace('<script src="/directory.js"></script>', '<script>window.HANAH_DIRECTORY_DATA='+json.dumps(json.loads((root/'data/guangdong_institutions.json').read_text()),ensure_ascii=False).replace('</','<\\/')+';</script>')
-for module in ['strategy','knowledge','career_ui','coverage']:
+for module in ['strategy','knowledge','career_ui','coverage','profile_import']:
     html=html.replace(f'<script src="/{module}.js"></script>', '<script>'+(root/f'web/{module}.js').read_text()+'</script>')
 html=html.replace('<script src="/opportunities.js"></script>', '<script>'+(root/'web/opportunities.js').read_text()+'</script>')
 html=html.replace('<script src="/app.js"></script>', '<script>const HANAH_SOURCES='+json.dumps(json.loads((root/'sources.json').read_text()),ensure_ascii=False)+';\n'+adapter+'\n'+script+'</script>')
