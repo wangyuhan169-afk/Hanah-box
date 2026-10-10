@@ -8,7 +8,7 @@ const HANAH_PROFILE=(()=>{
   const bytes=Uint8Array.from(atob(encoded.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
   const input=JSON.parse(new TextDecoder().decode(bytes));
   if(!input||typeof input!=='object'||Array.isArray(input))throw Error('invalid profile');
-  const allowed=['name','sex','birth_date','degree','major','party','degree_origin','certification','degree_title','degree_school','degree_start','degree_graduation','graduation_year','graduation_month','undergrad_school','undergrad_major','undergrad_start','undergrad_graduation','undergrad_title','undergrad_date_note','student_leadership','leadership_start','leadership_end','leadership_proof','leadership_note','work_years','higher_ed_counselor_years','work_experience','fresh','establishment','preferred_cities','preferred_categories','profile_updated_at'];
+  const allowed=['name','sex','birth_date','degree','major','party','degree_origin','certification','degree_title','degree_school','degree_start','degree_graduation','graduation_year','graduation_month','undergrad_school','undergrad_major','undergrad_start','undergrad_graduation','undergrad_title','undergrad_date_note','student_leadership','leadership_start','leadership_end','leadership_proof','leadership_note','work_years','higher_ed_counselor_years','work_experience','fresh','establishment','preferred_cities','preferred_categories','profile_updated_at','marital_status','preferred_region'];
   return Object.fromEntries(Object.entries(input).filter(([k,v])=>allowed.includes(k)&&(typeof v==='string'||Array.isArray(v)&&v.every(x=>typeof x==='string'))));
  }catch{return undefined}
 })();

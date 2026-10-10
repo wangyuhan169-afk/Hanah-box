@@ -1,4 +1,5 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
+require('./profile_import.cjs');
 const snapshot=JSON.parse(fs.readFileSync('data/verified_snapshot.json','utf8'));
 const additions=JSON.parse(fs.readFileSync('data/reviewed_positions.json','utf8'));for(const j of additions)if(!snapshot.jobs.some(x=>x.id===j.id))snapshot.jobs.push(j);
 const source=JSON.parse(fs.readFileSync('sources.json','utf8'));
