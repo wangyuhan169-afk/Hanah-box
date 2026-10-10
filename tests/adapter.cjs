@@ -1,11 +1,13 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const snapshot=JSON.parse(fs.readFileSync('data/verified_snapshot.json','utf8'));
+const additions=JSON.parse(fs.readFileSync('data/reviewed_positions.json','utf8'));for(const j of additions)if(!snapshot.jobs.some(x=>x.id===j.id))snapshot.jobs.push(j);
 const source=JSON.parse(fs.readFileSync('sources.json','utf8'));
 const context={console,AbortController,Response,Blob,URL,URLSearchParams,TextEncoder,TextDecoder,Uint8Array,Intl,Date,structuredClone,setTimeout,clearTimeout,crypto:require('crypto').webcrypto,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return {textContent:'',onclick:null}}},fetch:async()=>new Response(JSON.stringify(snapshot)),location:{hash:'',pathname:'/',search:''},history:{replaceState(){}}};context.window=context;vm.createContext(context);
 vm.runInContext(fs.readFileSync('web/matching.js','utf8'),context);
 vm.runInContext(fs.readFileSync('web/planning.js','utf8'),context);
 vm.runInContext(fs.readFileSync('web/strategy.js','utf8'),context);
 vm.runInContext(fs.readFileSync('web/knowledge.js','utf8'),context);
+vm.runInContext(fs.readFileSync('web/coverage.js','utf8'),context);
 vm.runInContext(fs.readFileSync('web/site_boot.js','utf8'),context);
 vm.runInContext('const HANAH_SOURCES='+JSON.stringify(source)+';const HANAH_JOBS='+JSON.stringify(snapshot.jobs)+';',context);
 vm.runInContext(fs.readFileSync('web/offline.js','utf8'),context);
@@ -22,6 +24,8 @@ strategy=context.HANAH_STRATEGY([{...trial,status:'已截止',opens:'2025-04-01'
 const career={tasks:{'trial::x':{done:true,due:'2027-01-01',note:'复盘'}},custom:[{id:'custom:1',title:'试讲',due:'2027-01-10'}],study:{duties:{status:'学习中',answer:1,note:'需要练习'}},settings:{filtersOpen:true}};
 let saved=await context.fetch('/api/career',{body:JSON.stringify({state:career})});assert.equal(saved.status,200);await context.HANAH_SITE.refresh();const kept=await (await context.fetch('/api/state')).json();assert.deepEqual(kept.career,career);
 saved=await context.fetch('/api/career',{body:JSON.stringify({state:null})});assert.equal(saved.status,400);assert.deepEqual((await (await context.fetch('/api/state')).json()).career,career);
+const directory=JSON.parse(fs.readFileSync('data/guangdong_institutions.json','utf8'));const coverage=context.HANAH_COVERAGE(directory,source,after.jobs);assert.equal(coverage.total,167);assert.equal(coverage.configured,53);assert.equal(coverage.rows.find(r=>r.name==='深圳信息职业技术大学').sources.length,1);assert(coverage.verified<coverage.total);
+const promotion=kept.jobs.find(j=>j.source_url==='https://www.cuhk.edu.cn/zh-hans/recruitment/20281');assert.equal(promotion.deadline,'2026-10-31');assert.equal(promotion.degree,'本科');assert(promotion.match.items.some(i=>i.field==='语言能力'&&i.outcome==='需核实'));
 assert.equal(context.HANAH_LESSONS.length,8);assert(context.HANAH_LESSONS.every(l=>l.options[l.answer]&&l.practice&&l.rubric.length));
 const make=(url,date)=>({school:'测试大学',category:'辅导员',title:'辅导员1',source_url:url,opens:date,verification:'原文已核对'});
 let plan=context.HANAH_PLANS([make('https://x/a','2026-03-01'),make('https://x/a','2026-03-01')])[0];assert.equal(plan.repeated,false);assert.equal(plan.records.length,1);

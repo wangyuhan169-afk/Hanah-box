@@ -7,7 +7,8 @@
     "school_level": "本科",
     "official_hosts": [
       "rsc.sysu.edu.cn"
-    ]
+    ],
+    "canonical_name": "中山大学"
   },
   {
     "name": "华南师范大学",
@@ -37,7 +38,8 @@
     ],
     "official_hosts": [
       "rsc.scnu.edu.cn"
-    ]
+    ],
+    "canonical_name": "华南师范大学"
   },
   {
     "name": "广东工业大学",
@@ -47,7 +49,8 @@
     "school_level": "本科",
     "official_hosts": [
       "rsc.gdut.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东工业大学"
   },
   {
     "name": "广东外语外贸大学",
@@ -67,7 +70,8 @@
     ],
     "official_hosts": [
       "rsc.gdufs.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东外语外贸大学"
   },
   {
     "name": "深圳大学",
@@ -114,7 +118,8 @@
     ],
     "official_hosts": [
       "hr.szu.edu.cn"
-    ]
+    ],
+    "canonical_name": "深圳大学"
   },
   {
     "name": "佛山大学",
@@ -126,7 +131,8 @@
     "school_level": "本科",
     "official_hosts": [
       "www.fosu.edu.cn"
-    ]
+    ],
+    "canonical_name": "佛山大学"
   },
   {
     "name": "东莞理工学院",
@@ -141,7 +147,8 @@
     "seed_urls": [],
     "official_hosts": [
       "rs.dgut.edu.cn"
-    ]
+    ],
+    "canonical_name": "东莞理工学院"
   },
   {
     "name": "东莞职业技术学院",
@@ -169,7 +176,8 @@
     ],
     "official_hosts": [
       "rsc.dgpt.edu.cn"
-    ]
+    ],
+    "canonical_name": "东莞职业技术学院"
   },
   {
     "name": "东莞城市学院",
@@ -180,7 +188,8 @@
     "school_level": "本科",
     "official_hosts": [
       "hr.dgcu.edu.cn"
-    ]
+    ],
+    "canonical_name": "东莞城市学院"
   },
   {
     "name": "广州新华学院",
@@ -191,7 +200,8 @@
     "school_level": "本科",
     "official_hosts": [
       "www.xhsysu.edu.cn"
-    ]
+    ],
+    "canonical_name": "广州新华学院"
   },
   {
     "name": "惠州学院",
@@ -214,7 +224,8 @@
     ],
     "official_hosts": [
       "rsc.hzu.edu.cn"
-    ]
+    ],
+    "canonical_name": "惠州学院"
   },
   {
     "name": "中山火炬职业技术学院",
@@ -232,7 +243,8 @@
     ],
     "official_hosts": [
       "www.zstp.edu.cn"
-    ]
+    ],
+    "canonical_name": "中山火炬职业技术学院"
   },
   {
     "name": "广东省人社厅 · 高校招聘",
@@ -253,34 +265,34 @@
         "city": "佛山市",
         "district": "多校区 / 区县待核实",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "专科"
       },
       "广东职业技术学院": {
         "city": "佛山市",
         "district": "多校区 / 区县待核实",
         "location_note": "公告明确学校位于佛山市，有禅城、高明、南海三个校区；岗位工作校区须核实。",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "专科"
       },
       "广东交通职业技术学院": {
         "city": "广州市",
         "district": "多校区 / 区县待核实",
         "location_note": "按院校所在地归入广州；学院有四个校区，具体岗位工作城市和校区须确认。",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "专科"
       },
       "广州中医药大学": {
         "city": "广州市",
         "district": "多校区 / 区县待核实",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "本科"
       },
       "广东财经大学": {
         "city": "广州市",
         "district": "广州 / 佛山校区待分配",
         "location_note": "院校所在地广州；学校有广州和佛山两校区，具体岗位工作城市和校区须向招聘方确认。",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "本科"
       },
       "广东开放大学（广东理工职业学院）": {
         "city": "中山市",
@@ -294,56 +306,56 @@
         "district": "多校区待核实",
         "location_note": "具体工作校区以岗位表和招聘方安排为准",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "专科"
       },
       "惠州学院": {
         "city": "惠州市",
         "district": "惠城区 / 校区待核实",
         "location_note": "具体工作校区以岗位表和招聘方安排为准",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "本科"
       },
       "广东工业大学": {
         "city": "广州市",
         "district": "多校区待核实",
         "location_note": "学校有揭阳等校区；岗位表未指定时不能据院校所在地断言工作城市。",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "本科"
       },
       "星海音乐学院": {
         "city": "广州市",
         "district": "校区待核实",
         "location_note": "具体工作校区以岗位表和招聘方安排为准",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "本科"
       },
       "广东科学技术职业学院": {
         "city": "珠海市",
         "district": "广州 / 珠海校区待核实",
         "location_note": "学校在广州与珠海办学；按主校区珠海分类，岗位工作校区须确认。",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "专科"
       },
       "广东第二师范学院": {
         "city": "广州市",
         "district": "校区待核实",
         "location_note": "具体工作校区以岗位表和招聘方安排为准",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "本科"
       },
       "广东省外语艺术职业学院": {
         "city": "广州市",
         "district": "校区待核实",
         "location_note": "具体工作校区以岗位表和招聘方安排为准",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "专科"
       },
       "肇庆学院": {
         "city": "肇庆市",
         "district": "校区待核实",
         "location_note": "具体工作校区以岗位表和招聘方安排为准",
         "nature": "公办",
-        "school_level": "待核实"
+        "school_level": "本科"
       }
     },
     "coverage_note": "省人社厅官方公告；自动解析已配置高校公开岗位表，不代表覆盖广东全省",
@@ -354,7 +366,7 @@
   {
     "name": "深圳北理莫斯科大学",
     "city": "深圳市",
-    "nature": "中外合作",
+    "nature": "合作办学",
     "school_level": "本科",
     "url": "https://www.smbu.edu.cn/xwgk/rczp.htm",
     "list_urls": [
@@ -400,7 +412,8 @@
     ],
     "official_hosts": [
       "www.smbu.edu.cn"
-    ]
+    ],
+    "canonical_name": "深圳北理莫斯科大学"
   },
   {
     "name": "广东女子职业技术学院",
@@ -431,7 +444,8 @@
     ],
     "official_hosts": [
       "www.gdfs.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东女子职业技术学院"
   },
   {
     "name": "广东酒店管理职业技术学院",
@@ -462,7 +476,8 @@
     ],
     "official_hosts": [
       "hr.gdjdxy.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东酒店管理职业技术学院"
   },
   {
     "name": "广州工商学院",
@@ -490,7 +505,8 @@
     ],
     "official_hosts": [
       "www.gzgs.edu.cn"
-    ]
+    ],
+    "canonical_name": "广州工商学院"
   },
   {
     "name": "广州华商学院",
@@ -525,7 +541,8 @@
     ],
     "official_hosts": [
       "rsc.gzhs.edu.cn"
-    ]
+    ],
+    "canonical_name": "广州华商学院"
   },
   {
     "name": "广东外语外贸大学南国商学院",
@@ -564,7 +581,8 @@
     ],
     "official_hosts": [
       "www.gwng.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东外语外贸大学南国商学院"
   },
   {
     "name": "广州城市理工学院",
@@ -585,7 +603,8 @@
     "seed_urls": [],
     "official_hosts": [
       "www.gcu.edu.cn"
-    ]
+    ],
+    "canonical_name": "广州城市理工学院"
   },
   {
     "name": "广东理工学院",
@@ -606,7 +625,8 @@
     "seed_urls": [],
     "official_hosts": [
       "www.gdlgxy.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东理工学院"
   },
   {
     "name": "广东白云学院",
@@ -637,7 +657,8 @@
     ],
     "official_hosts": [
       "rlzy.baiyunu.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东白云学院"
   },
   {
     "name": "广州南方学院",
@@ -658,7 +679,8 @@
     "seed_urls": [],
     "official_hosts": [
       "www.nfu.edu.cn"
-    ]
+    ],
+    "canonical_name": "广州南方学院"
   },
   {
     "name": "广东培正学院",
@@ -679,7 +701,8 @@
     "seed_urls": [],
     "official_hosts": [
       "www.peizheng.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东培正学院"
   },
   {
     "name": "广东科贸职业学院",
@@ -712,7 +735,8 @@
     ],
     "official_hosts": [
       "www.gdkm.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东科贸职业学院"
   },
   {
     "name": "广东工贸职业技术学院",
@@ -738,7 +762,8 @@
     ],
     "official_hosts": [
       "www.gdgm.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东工贸职业技术学院"
   },
   {
     "name": "广东轻工职业技术大学",
@@ -754,7 +779,8 @@
     "probe_error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1010)>",
     "official_hosts": [
       "www.gdqy.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东轻工职业技术大学"
   },
   {
     "name": "广东工程职业技术学院",
@@ -782,7 +808,8 @@
     ],
     "official_hosts": [
       "www.gdep.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东工程职业技术学院"
   },
   {
     "name": "广东交通职业技术学院",
@@ -798,7 +825,8 @@
     "probe_error": "<urlopen error [WinError 10054] 远程主机强迫关闭了一个现有的连接。>",
     "official_hosts": [
       "www.gdcp.cn"
-    ]
+    ],
+    "canonical_name": "广东交通职业技术学院"
   },
   {
     "name": "广东职业技术学院",
@@ -831,7 +859,8 @@
     ],
     "official_hosts": [
       "www.gdpt.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东职业技术学院"
   },
   {
     "name": "广东科学技术职业学院",
@@ -867,7 +896,8 @@
     ],
     "official_hosts": [
       "www.gdit.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东科学技术职业学院"
   },
   {
     "name": "深圳职业技术大学",
@@ -898,13 +928,14 @@
     ],
     "official_hosts": [
       "www.szpu.edu.cn"
-    ]
+    ],
+    "canonical_name": "深圳职业技术大学"
   },
   {
     "name": "深圳信息职业技术学院",
     "city": "深圳市",
     "nature": "公办",
-    "school_level": "专科",
+    "school_level": "本科",
     "url": "https://www.sziit.edu.cn/",
     "list_urls": [
       "https://www.sziit.edu.cn/"
@@ -919,7 +950,8 @@
     "seed_urls": [],
     "official_hosts": [
       "www.sziit.edu.cn"
-    ]
+    ],
+    "canonical_name": "深圳信息职业技术大学"
   },
   {
     "name": "广州工程技术职业学院",
@@ -939,7 +971,8 @@
     ],
     "seed_urls": [
       "https://www.gzvtc.edu.cn/info/1016/33701.htm"
-    ]
+    ],
+    "canonical_name": "广州工程技术职业学院"
   },
   {
     "name": "广东农工商职业技术学院",
@@ -963,7 +996,8 @@
     "seed_urls": [],
     "official_hosts": [
       "rczp.gdaib.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东农工商职业技术学院"
   },
   {
     "name": "广东文艺职业学院",
@@ -979,7 +1013,8 @@
     "probe_error": "<urlopen error [WinError 10054] 远程主机强迫关闭了一个现有的连接。>",
     "official_hosts": [
       "www.gdwy.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东文艺职业学院"
   },
   {
     "name": "广东岭南职业技术学院",
@@ -1000,7 +1035,8 @@
     "seed_urls": [],
     "official_hosts": [
       "www.lnc.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东岭南职业技术学院"
   },
   {
     "name": "广州城建职业学院",
@@ -1036,7 +1072,8 @@
     ],
     "official_hosts": [
       "rsw.gzccc.edu.cn"
-    ]
+    ],
+    "canonical_name": "广州城建职业学院"
   },
   {
     "name": "广东创新科技职业学院",
@@ -1052,7 +1089,8 @@
     "probe_error": "<urlopen error [WinError 10054] 远程主机强迫关闭了一个现有的连接。>",
     "official_hosts": [
       "www.gdcxxy.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东创新科技职业学院"
   },
   {
     "name": "广州华夏职业学院",
@@ -1068,7 +1106,8 @@
     "probe_error": "<urlopen error [WinError 10054] 远程主机强迫关闭了一个现有的连接。>",
     "official_hosts": [
       "www.gzhxtc.edu.cn"
-    ]
+    ],
+    "canonical_name": "广州华夏职业学院"
   },
   {
     "name": "广东文理职业学院",
@@ -1084,7 +1123,8 @@
     "probe_error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)>",
     "official_hosts": [
       "www.gdwlxy.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东文理职业学院"
   },
   {
     "name": "广东南华工商职业学院",
@@ -1119,7 +1159,8 @@
     ],
     "official_hosts": [
       "www.nhic.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东南华工商职业学院"
   },
   {
     "name": "汕头职业技术学院",
@@ -1143,7 +1184,8 @@
     ],
     "official_hosts": [
       "www.stpt.edu.cn"
-    ]
+    ],
+    "canonical_name": "汕头职业技术学院"
   },
   {
     "name": "茂名职业技术学院",
@@ -1164,7 +1206,8 @@
     "seed_urls": [],
     "official_hosts": [
       "www.mmpt.edu.cn"
-    ]
+    ],
+    "canonical_name": "茂名职业技术学院"
   },
   {
     "name": "广东茂名农林科技职业学院",
@@ -1180,7 +1223,8 @@
     "probe_error": "<urlopen error [WinError 10054] 远程主机强迫关闭了一个现有的连接。>",
     "official_hosts": [
       "www.gdnl.org.cn"
-    ]
+    ],
+    "canonical_name": "广东茂名农林科技职业学院"
   },
   {
     "name": "广东江门幼儿师范高等专科学校",
@@ -1196,6 +1240,132 @@
     "probe_error": "<urlopen error [WinError 10054] 远程主机强迫关闭了一个现有的连接。>",
     "official_hosts": [
       "www.gdjmesc.edu.cn"
-    ]
+    ],
+    "canonical_name": "广东江门幼儿师范高等专科学校"
+  },
+  {
+    "name": "暨南大学",
+    "city": "广州市",
+    "nature": "公办",
+    "school_level": "本科",
+    "url": "https://hrdam.jnu.edu.cn/",
+    "official_hosts": [
+      "hrdam.jnu.edu.cn"
+    ],
+    "max_announcements": 14,
+    "coverage_note": "已核对官方招聘入口；栏目接入不代表所有岗位已采集，具体结果以检查记录为准。",
+    "list_urls": [
+      "https://hrdam.jnu.edu.cn/",
+      "https://hrdam.jnu.edu.cn/264/list.htm"
+    ],
+    "canonical_name": "暨南大学"
+  },
+  {
+    "name": "华南理工大学",
+    "city": "广州市",
+    "nature": "公办",
+    "school_level": "本科",
+    "url": "https://www2.scut.edu.cn/hr/4457/list.htm",
+    "official_hosts": [
+      "www2.scut.edu.cn"
+    ],
+    "max_announcements": 14,
+    "coverage_note": "已核对官方招聘入口；栏目接入不代表所有岗位已采集，具体结果以检查记录为准。",
+    "list_urls": [
+      "https://www2.scut.edu.cn/hr/4457/list.htm",
+      "https://www2.scut.edu.cn/hr/4467/list.htm"
+    ],
+    "canonical_name": "华南理工大学"
+  },
+  {
+    "name": "华南农业大学",
+    "city": "广州市",
+    "nature": "公办",
+    "school_level": "本科",
+    "url": "https://hr.scau.edu.cn/",
+    "official_hosts": [
+      "hr.scau.edu.cn"
+    ],
+    "max_announcements": 14,
+    "coverage_note": "已核对官方招聘入口；栏目接入不代表所有岗位已采集，具体结果以检查记录为准。",
+    "list_urls": [
+      "https://hr.scau.edu.cn/",
+      "https://hr.scau.edu.cn/19369/list.htm"
+    ],
+    "canonical_name": "华南农业大学"
+  },
+  {
+    "name": "广州大学",
+    "city": "广州市",
+    "nature": "公办",
+    "school_level": "本科",
+    "url": "https://www.gzhu.edu.cn/rczp1.htm",
+    "official_hosts": [
+      "www.gzhu.edu.cn"
+    ],
+    "max_announcements": 14,
+    "coverage_note": "已核对官方招聘入口；栏目接入不代表所有岗位已采集，具体结果以检查记录为准。",
+    "list_urls": [
+      "https://www.gzhu.edu.cn/rczp1.htm",
+      "https://www.gzhu.edu.cn/rczp1/qtxlzpgg.htm"
+    ],
+    "canonical_name": "广州大学"
+  },
+  {
+    "name": "广东财经大学",
+    "city": "广州市",
+    "nature": "公办",
+    "school_level": "本科",
+    "url": "https://rsc.gdufe.edu.cn/7198/list.htm",
+    "official_hosts": [
+      "rsc.gdufe.edu.cn"
+    ],
+    "max_announcements": 14,
+    "coverage_note": "已核对官方招聘入口；栏目接入不代表所有岗位已采集，具体结果以检查记录为准。",
+    "canonical_name": "广东财经大学"
+  },
+  {
+    "name": "广东技术师范大学",
+    "city": "广州市",
+    "nature": "公办",
+    "school_level": "本科",
+    "url": "https://rsc.gpnu.edu.cn/rczp.htm",
+    "official_hosts": [
+      "rsc.gpnu.edu.cn"
+    ],
+    "max_announcements": 14,
+    "coverage_note": "已核对官方招聘入口；栏目接入不代表所有岗位已采集，具体结果以检查记录为准。",
+    "canonical_name": "广东技术师范大学"
+  },
+  {
+    "name": "香港中文大学（深圳）",
+    "city": "深圳市",
+    "nature": "合作办学",
+    "school_level": "本科",
+    "url": "https://www.cuhk.edu.cn/zh-hans/taxonomy/term/37",
+    "official_hosts": [
+      "www.cuhk.edu.cn"
+    ],
+    "max_announcements": 14,
+    "coverage_note": "官网行政职位栏目。已人工核对两条截止2026-10-31的岗位；其他中英文岗位保留待核验，自动访问可能受限制。",
+    "seed_urls": [
+      "https://www.cuhk.edu.cn/zh-hans/recruitment/20281",
+      "https://www.cuhk.edu.cn/zh-hans/recruitment/18776"
+    ],
+    "canonical_name": "香港中文大学（深圳）"
+  },
+  {
+    "name": "珠海科技学院",
+    "city": "珠海市",
+    "nature": "民办",
+    "school_level": "本科",
+    "url": "https://hr.zcst.edu.cn/1091/list.htm",
+    "official_hosts": [
+      "hr.zcst.edu.cn",
+      "zcst.hotjob.cn"
+    ],
+    "max_announcements": 14,
+    "coverage_note": "官网含2026-2027学年招聘公告；动态职位系统仍需核对，旧URL年份不能直接作为公告发布日期。",
+    "canonical_name": "珠海科技学院"
   }
 ]

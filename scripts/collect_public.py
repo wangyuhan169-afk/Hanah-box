@@ -88,7 +88,11 @@ def collect(source):
 def main():
     sources=json.loads((ROOT/'sources.json').read_text(encoding='utf-8'))
     old=json.loads((ROOT/'data/verified_snapshot.json').read_text(encoding='utf-8'))
-    jobs={j['id']:j for j in old['jobs']};notices={n['url']:n for n in old.get('notices',[])};checked=[]
+    jobs={j['id']:j for j in old['jobs']}
+    additions=ROOT/'data/reviewed_positions.json'
+    if additions.exists():
+        for job in json.loads(additions.read_text(encoding='utf-8')):jobs.setdefault(job['id'],job)
+    notices={n['url']:n for n in old.get('notices',[])};checked=[]
     with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
         for source,found,discovered in pool.map(collect,sources):
             checked.append(source)

@@ -47,7 +47,7 @@ def assess(j,p,today,status='截止待核实'):
         add('工作经历','需核实',experience_text+'；需核对具体岗位职责、起止和证明，十年为本人自述')
     elif re.search(r'\d+年以上.*?(?:工作经历|工作经验)',special,re.S):
         add('专项工作经历','需核实',special+'；须证明公告要求的具体工作，企业教育年限不能直接替代')
-    if re.search(r'英语六级|CET.?6|俄语.*(?:能力|流利)|英语.*(?:工作能力|流利)',special,re.I):
+    if re.search(r'英语六级|CET.?6|俄语.*(?:能力|流利)|英语.*(?:工作能力|流利)|中英文.*(?:写作|口语|沟通)',special,re.I):
         add('语言能力','需核实',special+'；尚未提供公告要求的语言成绩或能力证明')
     if f.get('职称等级') and f['职称等级'] not in ['不限','无']:add('职称','需核实',f['职称等级']+'；本人尚未提供职称证书')
     summary='不符合' if any(i['outcome']=='不符合' for i in items) else '需进一步核实' if any(i['outcome']=='需核实' for i in items) else '符合已知条件'
