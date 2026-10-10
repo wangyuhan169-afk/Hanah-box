@@ -119,6 +119,8 @@ def state():
         personal={r['id']:json.loads(r['body']) for r in c.execute('SELECT * FROM personal')}
         p=c.execute("SELECT body FROM settings WHERE key='profile'").fetchone()
         profile=json.loads(p['body']) if p else {}
+        career_row=c.execute("SELECT body FROM settings WHERE key='career'").fetchone()
+        career=json.loads(career_row['body']) if career_row else {}
         notices=[json.loads(r['body']) for r in c.execute('SELECT body FROM notices')]
         by_url={n['url']:n for n in notices}
         for j in jobs:
@@ -129,7 +131,7 @@ def state():
             j['personal']=personal.get(j['id'],{})
             j['status']=status(j); j['advice']=advice(j); j['match']=match(j,profile)
             j['reminders']=reminders(j,j['personal'])
-        return {'jobs':jobs,'profile':profile,'coverage':{'schools':sorted({j['school'] for j in jobs if j.get('verification') in ['原文已核对','已核验']}),'cities':sorted({j['city'] for j in jobs if j.get('verification') in ['原文已核对','已核验']})},'sources':[json.loads(r['body']) for r in c.execute('SELECT body FROM sources')],
+        return {'jobs':jobs,'profile':profile,'career':career,'coverage':{'schools':sorted({j['school'] for j in jobs if j.get('verification') in ['原文已核对','已核验']}),'cities':sorted({j['city'] for j in jobs if j.get('verification') in ['原文已核对','已核验']})},'sources':[json.loads(r['body']) for r in c.execute('SELECT body FROM sources')],
                 'notices':[json.loads(r['body']) for r in c.execute('SELECT body FROM notices')],'today':now().date().isoformat()}
 
 class Links(HTMLParser):
@@ -299,7 +301,7 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/healthz': return self.respond({'ok':True,'app':'hanah'})
         if not self.authorized(): return
         if path=='/api/state': return self.respond(state())
-        files={'/':'index.html','/matching.js':'matching.js','/app.js':'app.js','/style.css':'style.css'}
+        files={'/':'index.html',**{'/'+p.name:p.name for p in (ROOT/'web').glob('*.js')},'/style.css':'style.css','/career.css':'career.css'}
         if path in files:
             name=files[path]; kind={'html':'text/html','js':'text/javascript','css':'text/css'}[name.split('.')[-1]]
             return self.respond((ROOT/'web'/name).read_bytes(),kind=kind+'; charset=utf-8')
@@ -323,6 +325,10 @@ class Handler(BaseHTTPRequestHandler):
                 return self.respond(xlsx(jobs),kind='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             with connect() as c:
                 if path=='/api/profile': c.execute("INSERT OR REPLACE INTO settings VALUES ('profile',?)",(json.dumps(body,ensure_ascii=False),))
+                elif path=='/api/career':
+                    plan=body.get('state')
+                    if not isinstance(plan,dict) or len(json.dumps(plan))>500000: raise ValueError('计划数据无效或过大')
+                    c.execute("INSERT OR REPLACE INTO settings VALUES ('career',?)",(json.dumps(plan,ensure_ascii=False),))
                 elif path=='/api/personal':
                     if body.get('stage') not in STAGES: raise ValueError('无效报名进度')
                     if not c.execute('SELECT 1 FROM jobs WHERE id=?',(body.get('id'),)).fetchone(): raise ValueError('岗位不存在')

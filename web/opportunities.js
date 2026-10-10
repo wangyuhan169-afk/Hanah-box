@@ -16,6 +16,7 @@ function renderOpportunityExtras(){
  $('#collectionSummary').innerHTML=`<strong>信息完整度</strong><span>${sources.length} 个来源入口 · ${sources.filter(s=>s.last_success).length} 个曾成功访问 · ${sources.filter(s=>s.error).length} 个本次访问有失败 · ${pending.length} 份公告仍待解析／复核</span><small>来源数量不是院校全覆盖率；学校官网、政府转载可能重复。自动整理岗位须核验。某校未出现岗位，不能据此判断没有招聘。</small>`;
  $('#planningPanel').hidden=tab!=='planning';
  if(tab==='planning')renderPlans();
+ $('#learningPanel').hidden=tab!=='learning';if(tab==='learning')renderLearning();initCareerUi();
  $('#sourceCards').innerHTML=sources.map(s=>{
   const jobs=genuine.filter(j=>j.school===s.name),missing=data.notices.filter(n=>n.school===s.name&&(!n.parsed_jobs||n.attachment_errors?.length||n.error));
   return `<article class="sourceCard"><strong>${esc(s.name)} <span class="badge ${s.error||!s.parsed_jobs?'warn':''}">${esc(s.coverage_state||(s.error?'访问失败':s.last_success?'曾访问成功':'待检查'))}</span></strong><span>${esc(s.nature||'政府汇总入口')} · ${esc(s.school_level||'多院校')} · ${esc(s.city||'地点待核实')}</span><a href="${safeLink(s.url)}" target="_blank" rel="noopener">官方入口 ↗</a><small>最近尝试 ${esc(s.last_attempt||'尚未检查')} · 最近成功访问 ${esc(s.last_success||'尚未成功')}</small><small>发现 ${esc(s.discovered??'未统计')} 份公告 · 本次解析 ${esc(s.parsed_jobs??'未统计')} 个岗位 · 该校留存 ${jobs.length} 个岗位</small><p class="muted">${esc(s.coverage_note||'仅监测所列栏目')}${s.error?'；'+esc(s.error):''}</p>${missing.slice(0,3).map(n=>`<a href="${safeLink(n.url)}" target="_blank" rel="noopener">待核验：${esc(n.title)} ↗</a>`).join('')}</article>`;
@@ -26,9 +27,4 @@ function renderOpportunityExtras(){
   $('#empty p').textContent='这不代表广东高校没有招聘。可清空筛选、查看长期线索，或在院校覆盖页检查未解析公告。';
  }
 }
-function renderPlans(){
- const all=window.HANAH_PLANS(data.jobs,data.today),mine=$('#planMine').checked,groups=all.filter(g=>!mine||g.relevant);
- $('#planSummary').textContent=`${groups.length} 组同校同类岗位记录；${groups.filter(g=>g.repeated).length} 组有跨年样本，${groups.filter(g=>g.substantiated).length} 组跨年样本已核对。年份记录不足时保留观察目标。`;
- if(data.profile.birth_date){const birth=data.profile.birth_date.slice(0,10).split('-').map(Number),start=2027-birth[0]-((birth[1]>1||birth[2]>1)?1:0),end=2027-birth[0];$('#planSummary').textContent+=` 按生日推算，2027年为 ${start}–${end} 周岁；年龄资格须按新公告的计算日重核。`}
- $('#planCards').innerHTML=groups.map(g=>`<article class="planCard"><div><span class="badge ${g.substantiated?'':'warn'}">${esc(g.signal)}</span><h3>${esc(g.school)} · ${esc(g.title)}</h3><p>${esc(g.nature||'性质待核实')} · ${esc(g.school_level||'层次待核实')} · ${esc(g.category)}</p></div><strong>${esc(g.window)}</strong><p>${esc(g.basis)}</p><small>建议提前关注：${esc(g.monitoring)}；仅为观察计划。</small><details><summary>查看历年公告与日期依据</summary>${g.records.map(r=>`<p><a href="${safeLink(r.url)}" target="_blank" rel="noopener">${esc(r.date)} · ${esc(r.basis)} ↗</a><small>报名开始：${esc(showDate(r.opens))} · 截止：${esc(showDate(r.deadline))} · ${esc(r.verification||'待核验')}</small></p>`).join('')||'<p>缺少有效日期，需继续补充公告。</p>'}</details><p class="muted">${esc(g.warning)}</p></article>`).join('');
-}
+function renderPlans(){renderCareerPlanning()}
