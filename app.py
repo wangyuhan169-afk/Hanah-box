@@ -301,6 +301,7 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/healthz': return self.respond({'ok':True,'app':'hanah'})
         if not self.authorized(): return
         if path=='/api/state': return self.respond(state())
+        if path=='/directory.js': return self.respond('window.HANAH_DIRECTORY_DATA='+ (ROOT/'data/guangdong_institutions.json').read_text()+';',kind='text/javascript; charset=utf-8')
         files={'/':'index.html',**{'/'+p.name:p.name for p in (ROOT/'web').glob('*.js')},'/style.css':'style.css','/career.css':'career.css'}
         if path in files:
             name=files[path]; kind={'html':'text/html','js':'text/javascript','css':'text/css'}[name.split('.')[-1]]

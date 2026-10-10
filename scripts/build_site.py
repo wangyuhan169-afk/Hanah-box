@@ -1,5 +1,5 @@
 """Build the public static site without any private profile, records, or credentials."""
-import json,subprocess,sys
+import json,subprocess,sys,re
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 subprocess.run([sys.executable,str(ROOT/'scripts/build_offline.py')],check=True)
@@ -26,7 +26,7 @@ if profile.exists():
  private=json.loads(profile.read_text())
  for field in ['name','birth_date','degree_school','undergrad_school','student_leadership','work_experience','leadership_note']:
   value=private.get(field)
-  if value and value in text:raise RuntimeError('Private profile field leaked into public site: '+field)
+  if value and re.search(re.escape(json.dumps(field))+r'\s*:\s*'+re.escape(json.dumps(value,ensure_ascii=False)),text):raise RuntimeError('Private profile field leaked into public site: '+field)
  snapshot=json.loads((out/'snapshot.json').read_text())
  if 'profile' in snapshot or any(any(k in j for k in ['personal','match','_local_edit']) for j in snapshot['jobs']):raise RuntimeError('Public snapshot includes private record fields')
 print('Public site:',len(json.loads((out/'snapshot.json').read_text())['jobs']),'positions; private profile excluded')

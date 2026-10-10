@@ -15,7 +15,7 @@ function renderOpportunityExtras(){
  $('#open').textContent=open.length;
  $('#collectionSummary').innerHTML=`<strong>信息完整度</strong><span>${sources.length} 个来源入口 · ${sources.filter(s=>s.last_success).length} 个曾成功访问 · ${sources.filter(s=>s.error).length} 个本次访问有失败 · ${pending.length} 份公告仍待解析／复核</span><small>来源数量不是院校全覆盖率；学校官网、政府转载可能重复。自动整理岗位须核验。某校未出现岗位，不能据此判断没有招聘。</small>`;
  $('#planningPanel').hidden=tab!=='planning';
- if(tab==='planning')renderPlans();
+ renderDirectory();if(tab==='planning')renderPlans();
  $('#learningPanel').hidden=tab!=='learning';if(tab==='learning')renderLearning();initCareerUi();
  $('#sourceCards').innerHTML=sources.map(s=>{
   const jobs=genuine.filter(j=>j.school===s.name),missing=data.notices.filter(n=>n.school===s.name&&(!n.parsed_jobs||n.attachment_errors?.length||n.error));

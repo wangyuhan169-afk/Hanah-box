@@ -27,7 +27,7 @@ window.HANAH_STRATEGY=(jobs,profile,today,career={})=>{
   push('materials','建立本岗位报名材料清单',j.materials?`已录入公告材料：\n${j.materials}\n按原公告逐项检查签字、盖章、扫描及命名要求；历史材料不能直接作为2027必备清单。`:'公告材料尚未完整提取：打开原文和附件，列出材料、签章单位、报名方式与提交时刻，再修改本任务。');
   if(profile.degree_origin==='境外')push('major',profile.certification==='已取得'?'整理留服认证与专业认定材料':'核实认证要求并准备认证材料','对照毕业证、学位、认证书、成绩单与课程说明，向目标学校确认传播学对应专业范围。境外专业不自动等同国内专业代码。');
   if(uncertain.some(i=>/学生干部/.test(i.field)))push('leadership','核对学生干部任职证明要求','确认原公告是否适用于往届；如适用，请原学校出具职务、起止年月、任职年限及盖章证明。企业教育工作不能替代高校任职经历。');
-  if(uncertain.some(i=>/语言/.test(i.field)))push('language','核实并准备语言能力证明','核对六级／同等语言能力的认定方式；先确认已有成绩和是否接受替代证明，再安排考试。');
+  if(uncertain.some(i=>/语言/.test(i.field)))push('language','核实并准备语言能力证明',uncertain.some(i=>/六级|CET.?6/i.test(i.evidence||''))?'核对六级／同等语言能力的认定方式；先确认已有成绩和是否接受替代证明，再安排考试。':'按公告确认中英文写作与沟通能力的考核方式，准备语言作品、经历或成绩证明。公告未要求统一语言考试时，不自动安排六级考试。');
   if(uncertain.some(i=>/工作经历/.test(i.field)))push('experience','整理岗位职责与工作经历证据','按实际任职年月整理劳动合同、社保和职责证明；专项公文、宣传或高校工作经历需单独确认，不能仅以总工作年限替代。');
   push('study','完成一轮对应岗位练习',`进入学习备考的「${track(j)}」方向，完成知识卡、一次自编案例／写作练习，记录不足。新公告发布后按具体笔试与面试科目调整。`,active?prep:[today,add(goal,-14)].sort().at(-1));
   push('action',active?'提交报名并留存回执':rolling?'联系学校确认仍有空缺':'检查2027新公告并重新评估资格',active?`报名开始：${j.opens||'未披露'}；官方截止：${j.deadline}。建议提前提交；请同时核对材料期限 ${j.material_deadline||'未单独录入'}、审核、缴费与邮寄规则。`:'本日期是个人关注目标，不是报名截止。确认新公告、岗位表、人数与年龄计算日，重新生成报名计划。',submit);

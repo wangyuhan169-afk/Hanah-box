@@ -66,6 +66,9 @@ def recruitment_links(doc):
     host=urlsplit(doc.url).hostname
     out={}
     for u,t in doc.links:
+        # Official bilingual position titles often omit the Chinese word for recruitment.
+        if host=='www.cuhk.edu.cn' and re.fullmatch(r'https://www\.cuhk\.edu\.cn/zh-hans/recruitment/\d+',u) and re.search(r'Ref\.?\s*20\d{2}/',t,re.I):
+            out[u]=t;continue
         if urlsplit(u).scheme=='https' and urlsplit(u).hostname==host and RECRUIT.search(t) and not EXCLUDE.search(t) and not AFFILIATED.search(t) and not re.search(r'\.(?:xlsx?|pdf|docx?|zip)(?:$|\?)',u) and (re.search(r'/info/|post_\d|/a(?:_|/)\d/|/page\.htm|/\d{4,}(?:\.html?|$)|article|content|news|/contents/',u,re.I)):out[u]=t
     return list(out.items())
 

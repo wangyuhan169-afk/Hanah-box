@@ -24,7 +24,7 @@ window.HANAH_MATCH=(j,p,today,status)=>{
  if(/(?:高校|高等院校|专职辅导员).*?(?:工作经历|工作经验)|(?:工作经历|工作经验).*?(?:高校|高等院校)/.test(xpText))add('高校工作经历','需核实',xpText+'；企业教育经历不直接等同高校专职辅导员经历');
  else if(xp&&!['不限','无'].includes(xp))add('工作经历','需核实',xpText+'；需核对具体岗位职责、起止和证明，十年为本人自述');
  else if(/\d+年以上[\s\S]*?(?:工作经历|工作经验)/.test(special))add('专项工作经历','需核实',special+'；须证明公告要求的具体工作，企业教育年限不能直接替代');
- if(/英语六级|CET.?6|俄语.*(?:能力|流利)|英语.*(?:工作能力|流利)/i.test(special))add('语言能力','需核实',special+'；尚未提供公告要求的语言成绩或能力证明');
+ if(/英语六级|CET.?6|俄语.*(?:能力|流利)|英语.*(?:工作能力|流利)|中英文.*(?:写作|口语|沟通)/i.test(special))add('语言能力','需核实',special+'；尚未提供公告要求的语言成绩或能力证明');
  if(f['职称等级']&&!['不限','无'].includes(f['职称等级']))add('职称','需核实',f['职称等级']+'；本人尚未提供职称证书');
  const summary=items.some(i=>i.outcome==='不符合')?'不符合':items.some(i=>i.outcome==='需核实')?'需进一步核实':'符合已知条件';
  const majorRelated=!majors.length||majors.includes('不限')||(!!p.major&&majors.some(v=>v.includes(p.major)))||(p.major==='传播学'&&/传播|新闻|新媒体/.test(e.major||''))||(['本科','大专','高中'].includes(j.degree)&&!!p.undergrad_major&&(e.major||'').includes(p.undergrad_major));
