@@ -25,10 +25,23 @@ class DirectoryTests(unittest.TestCase):
         jobs=json.loads((ROOT/'data/reviewed_positions.json').read_text(encoding='utf-8'))
         self.assertEqual(len({j['id'] for j in jobs}),len(jobs))
         for j in jobs:
-            self.assertEqual(j['deadline'],'2026-10-31')
             self.assertIsNone(j['opens'])
-            self.assertIsNone(j['published'])
             self.assertNotIn('不限',j['majors'])
-            self.assertTrue(j['source_url'].startswith('https://www.cuhk.edu.cn/zh-hans/recruitment/'))
+            self.assertTrue(j['source_url'].startswith('https://'))
+            if 'cuhk.edu.cn' in j['source_url']:
+                self.assertEqual(j['deadline'],'2026-10-31')
+                self.assertIsNone(j['published'])
+
+    def test_urgent_and_age_exception_positions_preserve_original_limits(self):
+        jobs=json.loads((ROOT/'data/reviewed_positions.json').read_text(encoding='utf-8'))
+        urgent=next(j for j in jobs if j['id']=='manual-gdufs-20261014-business')
+        self.assertEqual(urgent['count'],3)
+        self.assertEqual(urgent['deadline'],'2026-10-14')
+        self.assertEqual(urgent['eligibility']['age_as_of'],'2026-10-14')
+        self.assertIn('文案撰写',urgent['exam'])
+        media=[j for j in jobs if j['id'].startswith('manual-gzhsvc-')]
+        self.assertEqual(len(media),2)
+        self.assertTrue(all(j['count'] is None and j['deadline'] is None for j in media))
+        self.assertTrue(all('放宽' in j['eligibility']['age_text'] for j in media))
 
 if __name__=='__main__':unittest.main()

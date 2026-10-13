@@ -1367,5 +1367,69 @@
     "max_announcements": 14,
     "coverage_note": "官网含2026-2027学年招聘公告；动态职位系统仍需核对，旧URL年份不能直接作为公告发布日期。",
     "canonical_name": "珠海科技学院"
+  },
+  {
+    "name": "广州华商职业学院",
+    "city": "广州市",
+    "nature": "民办",
+    "school_level": "专科",
+    "url": "https://rsc.gzhsvc.edu.cn/rczp.htm",
+    "list_urls": [
+      "https://rsc.gzhsvc.edu.cn/rczp.htm",
+      "https://rsc.gzhsvc.edu.cn/rczp/10.htm"
+    ],
+    "seed_urls": [
+      "https://rsc.gzhsvc.edu.cn/info/1065/1915.htm",
+      "https://rsc.gzhsvc.edu.cn/info/1065/1911.htm",
+      "https://rsc.gzhsvc.edu.cn/info/1065/1904.htm"
+    ],
+    "official_hosts": [
+      "rsc.gzhsvc.edu.cn"
+    ],
+    "max_announcements": 14,
+    "coverage_note": "2026-10-13核对官方人才招聘列表及宣传、党务公告；广州与江门校区，岗位工作地点需核实。栏目接入不等于岗位完整采集。",
+    "canonical_name": "广州华商职业学院"
+  },
+  {
+    "name": "广东松山职业技术学院",
+    "city": "韶关市",
+    "nature": "公办",
+    "school_level": "专科",
+    "url": "https://hr.gdsspt.edu.cn/rcyj/qtryzp.htm",
+    "list_urls": [
+      "https://hr.gdsspt.edu.cn/rcyj/qtryzp.htm",
+      "https://hr.gdsspt.edu.cn/rcyj.htm"
+    ],
+    "seed_urls": [
+      "https://hr.gdsspt.edu.cn/info/1087/1567.htm"
+    ],
+    "official_hosts": [
+      "hr.gdsspt.edu.cn",
+      "hrms.gdsspt.edu.cn"
+    ],
+    "attachment_hosts": [
+      "hrms.gdsspt.edu.cn"
+    ],
+    "max_announcements": 14,
+    "coverage_note": "2026-10-13核对官方项目制教师招聘正文；岗位表在招聘系统下载接口，具体岗位条件仍需解析附件。管理、教学、科研助理一般30岁以下，实践教师一般40岁以下，不混用年龄门槛。",
+    "canonical_name": "广东松山职业技术学院"
+  },
+  {
+    "name": "广州应用科技学院",
+    "city": "广州市",
+    "nature": "民办",
+    "school_level": "本科",
+    "url": "https://www.gzasc.edu.cn/rsc/rczp.htm",
+    "list_urls": [
+      "https://www.gzasc.edu.cn/rsc/rczp.htm",
+      "https://www.gzasc.edu.cn/rsc/rczp/jsg.htm",
+      "https://www.gzasc.edu.cn/rsc/rczp/xzjfg.htm"
+    ],
+    "official_hosts": [
+      "www.gzasc.edu.cn"
+    ],
+    "max_announcements": 14,
+    "coverage_note": "2026-10-13从官方人事页面核对教师岗和行政教辅岗栏目链接；部分分页及栏目访问失败，尚不能判断岗位完整度。",
+    "canonical_name": "广州应用科技学院"
   }
 ]
