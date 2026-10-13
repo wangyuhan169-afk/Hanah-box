@@ -33,5 +33,7 @@ profile_path=root/'private/profile.json'
 if profile_path.exists():
     personal_html=real_html.replace('const HANAH_JOBS=', 'const HANAH_PROFILE='+json.dumps(json.loads(profile_path.read_text()),ensure_ascii=False).replace('</','<\\/')+';\nconst HANAH_JOBS=')
     personal_html=personal_html.replace('真实招聘岗位快照','WYH 个人备考快照').replace('官方快照 ','包含个人档案，请勿公开分享 · 官方快照 ')
+    reviewed_date=max((j.get('reviewed_at','')[:10] for j in json.loads((root/'data/reviewed_positions.json').read_text())),default='待核实')
+    personal_html=personal_html.replace(' · 自动更新请使用本地运行版 · 请定期备份',' · 补充岗位核对至 '+reviewed_date+' · 此文件不自动联网更新 · 请定期备份')
     (root/'dist/hanah-WYH-editable.html').write_text(personal_html)
     print('Built private WYH edition with personal profile')

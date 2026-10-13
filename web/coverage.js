@@ -7,6 +7,10 @@ window.HANAH_COVERAGE=(directory,sources,jobs)=>{
  });
  return {rows,total:rows.length,configured:rows.filter(r=>r.sources.length).length,recorded:rows.filter(r=>r.jobs.length).length,verified:rows.filter(r=>r.reviewed.length).length,missing:rows.filter(r=>!r.sources.length).length};
 };
+window.HANAH_PENDING_NOTICES=(notices,jobs)=>notices.filter(n=>{
+ const complete=jobs.some(j=>j.source_url===n.url&&j.notice_review_complete&&['原文已核对','已核验'].includes(j.verification)&&j.reviewed_at&&!(n.changes||[]).some(c=>c.at>j.reviewed_at));
+ return !!(n.error||n.attachment_errors?.length||(!n.parsed_jobs&&!complete));
+});
 })();
 let directoryPage=0,directoryBound=false,directoryView;
 function renderDirectory(){
